@@ -1,0 +1,7 @@
+#!/bin/bash
+BATCHFILE=/tmp/gdb.batch.tmp
+echo 'set disassembly-flavor intel' > $BATCHFILE
+echo 'disassemble /r b' >> $BATCHFILE
+OPCODES=$(cat -)
+echo "char b[] = { $OPCODES };" | gcc -g -w -x c -c -o /tmp/dis.o.tmp -
+gdb /tmp/dis.o.tmp -batch -x $BATCHFILE |  head -n -1 | tail -n +2 | cut -d':' -f2
